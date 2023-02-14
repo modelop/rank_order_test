@@ -1,0 +1,35 @@
+{
+  "id": "036e80c4-485b-4fad-a55b-25c7180f2338",
+  "group": "modelop",
+  "version": 10,
+  "jobType": "MODEL_BATCH_TEST_JOB",
+  "createdDate": "2022-03-22T21:36:16.693Z",
+  "lastModifiedDate": "2022-03-22T21:37:30.401Z",
+  "createdBy": "SYSTEM",
+  "lastModifiedBy": "SYSTEM",
+  "jobStatus": "WAITING",
+  "jobResult": "UNKNOWN",
+  "jobMessages": [
+  ],
+  "enableInputSchemaChecking": false,
+  "enableOutputSchemaChecking": false,
+  "jobRunTime": 1647984978523,
+  "jobWaitTime": 1647984978520,
+  "jobEndTime": 1647985041148,
+  "lastUpdateFromRuntime": "2022-03-22T21:37:30.401Z",
+  "jobParameters": {
+    "bins": [300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800],
+	"bucket_column": "ally_score",
+    "label_column": "defaulted",
+    "positive_label": 1
+  },
+  "inputData": [
+	{
+	  "filename": "rob_test.csv",
+	  "name": "rob_test.csv",
+	  "assetType": "FILE",
+	  "fileFormat": "CSV",
+	  "fileContentString": "val1\r\n1\r\n"
+	}
+  ]
+}
