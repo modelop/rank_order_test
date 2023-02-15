@@ -68,7 +68,13 @@ def metrics(data: pd.DataFrame) -> dict:
         values['percent'] = row['percent']
         dicto[incr] = values
         incr += 1
-    return {'Rank Order': dicto} 
+    return {
+        'test_name': "Rank Order Break",
+        'test_category': "rankorder",
+        'test_type': "rankorder",
+        'test_id': "rank_order_break",
+        'values': dicto
+    }
 
 def main():
     raw_json = Path('./example_job.json').read_text()
