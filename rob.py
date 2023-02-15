@@ -65,8 +65,14 @@ def metrics(data: pd.DataFrame) -> dict:
         values = {}
         values[f'{BUCKET_COL}_bucket'] = str(i)
         values['percent'] = row['percent']
-        list_of_values.append({'values': values})
-    return {'Rank_Order': list_of_values}
+        list_of_values.append(values)
+    return {
+        'test_name': 'Rank Order Break',
+        'test_category': 'rankorder',
+        'test_type': 'rankorder',
+        'test_id': 'rank_order_break',
+        'values': list_of_values
+    }
 
 def main():
     raw_json = Path('./example_job.json').read_text()
