@@ -60,16 +60,14 @@ def init(init_param):
 def metrics(data: pd.DataFrame) -> dict:
     bucketed_data = data.groupby([LABEL_COLUMN, pd.cut(data[BUCKET_COL], BINS)]).size().unstack().T
     bucketed_data['percent'] =  (bucketed_data[POSITIVE_LABEL] / data.shape[0])
-    list_of_dicts = []
     incr = 0
     for i, row in bucketed_data.iterrows():
         values = {}
         values[f'{BUCKET_COL}_bucket'] = str(i)
         values['percent'] = row['percent']
         dicto = {incr: values}
-        list_of_dicts.append(dicto)
         incr += 1
-    return {'Rank Order': list_of_dicts} 
+    return {'Rank Order': dicto} 
 
 def main():
     raw_json = Path('./example_job.json').read_text()
