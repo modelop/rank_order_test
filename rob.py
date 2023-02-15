@@ -61,11 +61,12 @@ def metrics(data: pd.DataFrame) -> dict:
     bucketed_data = data.groupby([LABEL_COLUMN, pd.cut(data[BUCKET_COL], BINS)]).size().unstack().T
     bucketed_data['percent'] =  (bucketed_data[POSITIVE_LABEL] / data.shape[0])
     incr = 0
+    dicto = {}
     for i, row in bucketed_data.iterrows():
         values = {}
         values[f'{BUCKET_COL}_bucket'] = str(i)
         values['percent'] = row['percent']
-        dicto = {incr: values}
+        dicto[incr] = values
         incr += 1
     return {'Rank Order': dicto} 
 
