@@ -68,12 +68,14 @@ def metrics(data: pd.DataFrame) -> dict:
         values['percent'] = row['percent']
         dicto[incr] = values
         incr += 1
-    return {
-        'test_name': "Rank Order Break",
-        'test_category': "rankorder",
-        'test_type': "rankorder",
-        'test_id': "rank_order_break",
-        'values': dicto
+    return {'RankOrder' : 
+        {
+            'test_name': "Rank Order Break",
+            'test_category': "rankorder",
+            'test_type': "rankorder",
+            'test_id': "rank_order_break",
+            'values': dicto
+        }
     }
 
 def main():
