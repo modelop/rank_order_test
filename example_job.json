@@ -9,27 +9,87 @@
   "lastModifiedBy": "SYSTEM",
   "jobStatus": "WAITING",
   "jobResult": "UNKNOWN",
-  "jobMessages": [
-  ],
   "enableInputSchemaChecking": false,
   "enableOutputSchemaChecking": false,
   "jobRunTime": 1647984978523,
   "jobWaitTime": 1647984978520,
   "jobEndTime": 1647985041148,
   "lastUpdateFromRuntime": "2022-03-22T21:37:30.401Z",
-  "jobParameters": {
-    "bins": [300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800],
-	"bucket_column": "ally_score",
-    "label_column": "defaulted",
-    "positive_label": 1
-  },
-  "inputData": [
-	{
-	  "filename": "rob_test.csv",
-	  "name": "rob_test.csv",
-	  "assetType": "FILE",
-	  "fileFormat": "CSV",
-	  "fileContentString": "val1\r\n1\r\n"
+  "jobParameters": {},
+  "referenceModel": {
+	"storedModel": {
+	  "modelMetaData": {
+		"custom": {},
+		"tags": [],
+		"name": "Rank and Order Break",
+		"description": "Monitor to rank and order",
+		"type": "PYTHON",
+		"inputSchema": [
+		  {
+			"schemaDefinition": {
+			  "type": "record",
+			  "name": "input_schema.avsc",
+			  "fields": [
+				{
+				  "type": "string",
+				  "specialValues": [],
+				  "scoringOptional": false,
+				  "role": "predictor",
+				  "protectedClass": false,
+				  "name": "input_var",
+				  "driftCandidate": false,
+				  "dataClass": "categorical"
+				},
+				{
+				  "type": "float",
+				  "specialValues": [],
+				  "scoringOptional": false,
+				  "role": "score",
+				  "protectedClass": false,
+				  "name": "probability",
+				  "driftCandidate": true,
+				  "dataClass": "numerical"
+				},
+				{
+				  "type": "int",
+				  "specialValues": [],
+				  "scoringOptional": false,
+				  "role": "non_predictor",
+				  "protectedClass": false,
+				  "name": "ally_score",
+				  "driftCandidate": true,
+				  "dataClass": "numerical"
+				},
+				{
+				  "type": "int",
+				  "specialValues": [],
+				  "scoringOptional": false,
+				  "role": "non_predictor",
+				  "protectedClass": false,
+				  "name": "fico_score",
+				  "driftCandidate": true,
+				  "dataClass": "numerical"
+				},
+				{
+				  "type": "int",
+				  "specialValues": [],
+				  "scoringOptional": false,
+				  "role": "label",
+				  "protectedClass": false,
+				  "name": "defaulted",
+				  "driftCandidate": true,
+				  "dataClass": "numerical"
+				}
+      ]
+			}
+		  }
+		],
+		"modelCategory": "BUSINESS_MODEL",
+		"modelUseCategory": "unassigned",
+		"modelOrganization": "company",
+		"modelRisk": "High",
+		"modelMethodology": "CNN"
+	  }
 	}
-  ]
+  }
 }
