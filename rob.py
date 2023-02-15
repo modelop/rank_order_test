@@ -57,18 +57,13 @@ def init(init_param):
     )
 
 # modelop.metrics
-def metrics(
-        data: pd.DataFrame, 
-        bins: list, 
-        bucket_column: str, 
-        label_column: str, 
-        positive_label: str) -> str:
-    bucketed_data = data.groupby([label_column, pd.cut(data[bucket_column], bins)]).size().unstack().T
-    bucketed_data['percent'] =  (bucketed_data[positive_label] / data.shape[0])
+def metrics(data: pd.DataFrame) -> dict:
+    bucketed_data = data.groupby([LABEL_COLUMN, pd.cut(data[BUCKET_COL], BINS)]).size().unstack().T
+    bucketed_data['percent'] =  (bucketed_data[POSITIVE_LABEL] / data.shape[0])
     list_of_values = []
     for i, row in bucketed_data.iterrows():
         values = {}
-        values[f'{bucket_column}_bucket'] = str(i)
+        values[f'{BUCKET_COL}_bucket'] = str(i)
         values['percent'] = row['percent']
         list_of_values.append({'values': values})
     return {'Rank_Order': list_of_values}
@@ -84,13 +79,7 @@ def main():
     print(POSITIVE_LABEL)
     data = pd.read_csv('./rob_test.csv')
     print('read data.')
-    result = metrics(
-            data,
-            BINS,
-            BUCKET_COL,
-            LABEL_COLUMN,
-            POSITIVE_LABEL
-        )
+    result = metrics(data)
     print(json.dumps(result, indent=3, sort_keys=True))
     print('done.')
     
