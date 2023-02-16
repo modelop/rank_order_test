@@ -69,11 +69,15 @@ def metrics(data: pd.DataFrame) -> dict:
         percentages.append(round(row[1] / (row[0] + row[1]),3))
     bucketed_data['percent'] = percentages
     incr = 0
+    # for UI output
     dicto = {}
+    # for doc output
+    listo = []
     for i, row in bucketed_data.iterrows():
         values = {}
         values[f'{BUCKET_COL}_bucket'] = str(i)
         values['percent'] = row['percent']
+        listo.append(values)
         dicto[incr] = values
         incr += 1
     return {'RankOrder' : 
@@ -83,7 +87,8 @@ def metrics(data: pd.DataFrame) -> dict:
             'test_type': "rankorder",
             'test_id': "rank_order_break",
             'values': dicto
-        }]
+        }],
+        'RankOrderArray': listo
     }
 
 def main():
