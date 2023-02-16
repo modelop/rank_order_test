@@ -21,9 +21,7 @@ def init(init_param):
 
     job_json = init_param
 
-    BINS = [300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800]
-    BUCKET_COL= "ally_score"
-    POSITIVE_LABEL = 1
+    BINS = [250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850]
 
     if job_json is not None:
         logger.info(
@@ -31,6 +29,13 @@ def init(init_param):
             "'label_column' and 'score_column'."
         )
         input_schema_definition = infer.extract_input_schema(job_json)
+        for i in input_schema_definition['fields']:
+            if i.get('positiveClassLabel', False):
+                POSITIVE_LABEL = i.get('positiveClassLabel')
+                print(f'Found positive class label: {POSITIVE_LABEL}')
+            if i.get('bucketedColumn', False):
+                BUCKET_COL = i.get('name')
+                print(f'Found column to bucket: {BUCKET_COL}')
         monitoring_parameters = infer.set_monitoring_parameters(
             schema_json=input_schema_definition, check_schema=True
         )
@@ -59,7 +64,10 @@ def init(init_param):
 # modelop.metrics
 def metrics(data: pd.DataFrame) -> dict:
     bucketed_data = data.groupby([LABEL_COLUMN, pd.cut(data[BUCKET_COL], BINS)]).size().unstack().T
-    bucketed_data['percent'] =  (bucketed_data[POSITIVE_LABEL] / data.shape[0])
+    percentages = []
+    for _, row in bucketed_data.iterrows():
+        percentages.append(round(row[1] / (row[0] + row[1]),3))
+    bucketed_data['percent'] = percentages
     incr = 0
     dicto = {}
     for i, row in bucketed_data.iterrows():

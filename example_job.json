@@ -58,7 +58,8 @@
 				  "protectedClass": false,
 				  "name": "ally_score",
 				  "driftCandidate": true,
-				  "dataClass": "numerical"
+				  "dataClass": "numerical",
+				  "bucketedColumn": true
 				},
 				{
 				  "type": "int",
@@ -78,7 +79,8 @@
 				  "protectedClass": false,
 				  "name": "defaulted",
 				  "driftCandidate": true,
-				  "dataClass": "numerical"
+				  "dataClass": "numerical",
+				  "positiveClassLabel": 1
 				}
       ]
 			}
