@@ -1,0 +1,9 @@
+{
+    "tags": [],
+    "name": "Rank-Order-Break Monitor",
+    "description": "Beta ROB Monitor",
+    "modelCategory": "MODEL_MONITORING_MODEL",
+    "defaultAssociationRole": "PERFORMANCE_MODEL",
+    "frequentlyUsed": false,
+    "custom" : {}
+}
