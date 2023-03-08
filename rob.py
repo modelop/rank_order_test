@@ -7,39 +7,49 @@ import json
 
 logger = logging.getLogger(__name__)
 
-BINS = []
 BUCKET_COL = ''
-POSITIVE_LABEL = 1
 LABEL_COLUMN = None
+SCORE_COLUMN = None
 
 # modelop.init
 def init(init_param):
-    global BINS
-    global BUCKET_COL
-    global POSITIVE_LABEL
+    # global BINS
+    global BUCKET_COLUMN
+    # global POSITIVE_LABEL
     global LABEL_COLUMN
+    global SCORE_COLUMN
 
     job_json = init_param
 
-    BINS = [250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850]
+    # BINS = [250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850]
 
     if job_json is not None:
         logger.info(
             "Parameter 'job_json' is present and will be used to extract "
             "'label_column' and 'score_column'."
         )
+        ##### Retrieving jobParameters
+        try:
+            print('Attempting to extract the BUCKET_COL parameter from jobParameters.')
+            extracted_job = json.loads(job_json['rawJson'])['jobParameters']
+            BUCKET_COLUMN = extracted_job['BUCKET_COL']
+            print(f'Extracted BUCKET_COL: {BUCKET_COLUMN}')
+        except Exception as e:
+            print('Unable to extract the BUCKET_COL from jobParameters.')
+            print(e)
         input_schema_definition = infer.extract_input_schema(job_json)
-        for i in input_schema_definition['fields']:
-            if i.get('positiveClassLabel', False):
-                POSITIVE_LABEL = i.get('positiveClassLabel')
-                print(f'Found positive class label: {POSITIVE_LABEL}')
-            if i.get('bucketedColumn', False):
-                BUCKET_COL = i.get('name')
-                print(f'Found column to bucket: {BUCKET_COL}')
+        # for i in input_schema_definition['fields']:
+        #     if i.get('positiveClassLabel', False):
+        #         POSITIVE_LABEL = i.get('positiveClassLabel')
+        #         print(f'Found positive class label: {POSITIVE_LABEL}')
+        #     if i.get('bucketedColumn', False):
+        #         BUCKET_COL = i.get('name')
+        #         print(f'Found column to bucket: {BUCKET_COL}')
         monitoring_parameters = infer.set_monitoring_parameters(
             schema_json=input_schema_definition, check_schema=True
         )
         LABEL_COLUMN = monitoring_parameters['label_column']
+        SCORE_COLUMN = monitoring_parameters['score_column']
     else:
         logger.info(
             "Parameter 'job_json' it not present, attempting to use "
@@ -60,14 +70,15 @@ def init(init_param):
         ],
         types=(str),
     )
-
+    
 # modelop.metrics
 def metrics(data: pd.DataFrame) -> dict:
-    bucketed_data = data.groupby([LABEL_COLUMN, pd.cut(data[BUCKET_COL], BINS)]).size().unstack().T
-    percentages = []
-    for _, row in bucketed_data.iterrows():
-        percentages.append(round(row[1] / (row[0] + row[1]),3))
-    bucketed_data['percent'] = percentages
+    # bucketed_data = data.groupby([LABEL_COLUMN, pd.cut(data[BUCKET_COL], BINS)]).size().unstack().T
+    bucketed_data = round(data.groupby(BUCKET_COLUMN).mean()[[LABEL_COLUMN, SCORE_COLUMN]], 4)
+    # percentages = []
+    # for _, row in bucketed_data.iterrows():
+    #     percentages.append(round(row[1] / (row[0] + row[1]),3))
+    # bucketed_data['percent'] = percentages
     incr = 0
     # for UI output
     dicto = {}
@@ -75,11 +86,13 @@ def metrics(data: pd.DataFrame) -> dict:
     listo = []
     for i, row in bucketed_data.iterrows():
         values = {}
-        values[f'{BUCKET_COL}_bucket'] = str(i)
-        values['percent'] = row['percent']
+        values[f'{BUCKET_COLUMN}_bucket'] = str(i)
+        values[LABEL_COLUMN] = row[LABEL_COLUMN]
+        values[SCORE_COLUMN] = row[SCORE_COLUMN]
         listo.append(values)
         dicto[incr] = values
         incr += 1
+    
     return {'RankOrder' : 
         [{
             'test_name': "Rank Order Break",
@@ -96,10 +109,9 @@ def main():
     init_param = {'rawJson': raw_json}
     init(init_param)
     print('initialized parameters from job_json.')
-    print(BINS)
-    print(BUCKET_COL)
+    print(BUCKET_COLUMN)
     print(LABEL_COLUMN)
-    print(POSITIVE_LABEL)
+    print(SCORE_COLUMN)
     data = pd.read_csv('./rob_test.csv')
     print('read data.')
     result = metrics(data)
