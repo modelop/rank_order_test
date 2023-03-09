@@ -35,7 +35,7 @@ def init(init_param):
             BUCKET_COLUMN = extracted_job['BUCKET_COLUMN']
             print(f'Extracted BUCKET_COL: {BUCKET_COLUMN}')
         except Exception as e:
-            print('Unable to extract the BUCKET_COL from jobParameters.')
+            print('Unable to extract the BUCKET_COLUMN from jobParameters.')
             print(e)
         input_schema_definition = infer.extract_input_schema(job_json)
         # for i in input_schema_definition['fields']:
@@ -70,15 +70,10 @@ def init(init_param):
         ],
         types=(str),
     )
-    
+
 # modelop.metrics
 def metrics(data: pd.DataFrame) -> dict:
-    # bucketed_data = data.groupby([LABEL_COLUMN, pd.cut(data[BUCKET_COL], BINS)]).size().unstack().T
-    bucketed_data = round(data.groupby(BUCKET_COLUMN).mean()[[LABEL_COLUMN, SCORE_COLUMN]], 4)
-    # percentages = []
-    # for _, row in bucketed_data.iterrows():
-    #     percentages.append(round(row[1] / (row[0] + row[1]),3))
-    # bucketed_data['percent'] = percentages
+    bucketed_data = round(data.groupby(BUCKET_COLUMN).agg(['mean', 'count'])[[LABEL_COLUMN, SCORE_COLUMN]], 4)
     incr = 0
     # for UI output
     dicto = {}
@@ -87,8 +82,10 @@ def metrics(data: pd.DataFrame) -> dict:
     for i, row in bucketed_data.iterrows():
         values = {}
         values[f'{BUCKET_COLUMN}_bucket'] = str(i)
-        values[LABEL_COLUMN] = row[LABEL_COLUMN]
-        values[SCORE_COLUMN] = row[SCORE_COLUMN]
+        values[f'{LABEL_COLUMN}_mean'] = row[LABEL_COLUMN]['mean']
+        values[f'{SCORE_COLUMN}_mean'] = row[SCORE_COLUMN]['mean']
+        values[f'{LABEL_COLUMN}_count'] = row[LABEL_COLUMN]['count']
+        values[f'{SCORE_COLUMN}_count'] = row[SCORE_COLUMN]['count']
         listo.append(values)
         dicto[incr] = values
         incr += 1
