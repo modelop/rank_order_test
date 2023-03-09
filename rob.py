@@ -32,7 +32,7 @@ def init(init_param):
         try:
             print('Attempting to extract the BUCKET_COL parameter from jobParameters.')
             extracted_job = json.loads(job_json['rawJson'])['jobParameters']
-            BUCKET_COLUMN = extracted_job['BUCKET_COL']
+            BUCKET_COLUMN = extracted_job['BUCKET_COLUMN']
             print(f'Extracted BUCKET_COL: {BUCKET_COLUMN}')
         except Exception as e:
             print('Unable to extract the BUCKET_COL from jobParameters.')
