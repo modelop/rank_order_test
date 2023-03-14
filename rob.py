@@ -30,21 +30,14 @@ def init(init_param):
         )
         ##### Retrieving jobParameters
         try:
-            print('Attempting to extract the BUCKET_COL parameter from jobParameters.')
+            print('Attempting to extract the BUCKET_COLUMN parameter from jobParameters.')
             extracted_job = json.loads(job_json['rawJson'])['jobParameters']
             BUCKET_COLUMN = extracted_job['BUCKET_COLUMN']
-            print(f'Extracted BUCKET_COL: {BUCKET_COLUMN}')
+            print(f'Extracted BUCKET_COLUMN: {BUCKET_COLUMN}')
         except Exception as e:
             print('Unable to extract the BUCKET_COLUMN from jobParameters.')
             print(e)
         input_schema_definition = infer.extract_input_schema(job_json)
-        # for i in input_schema_definition['fields']:
-        #     if i.get('positiveClassLabel', False):
-        #         POSITIVE_LABEL = i.get('positiveClassLabel')
-        #         print(f'Found positive class label: {POSITIVE_LABEL}')
-        #     if i.get('bucketedColumn', False):
-        #         BUCKET_COL = i.get('name')
-        #         print(f'Found column to bucket: {BUCKET_COL}')
         monitoring_parameters = infer.set_monitoring_parameters(
             schema_json=input_schema_definition, check_schema=True
         )
